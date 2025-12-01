@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ заголовок }}</title>
+</head>
+<body>
+    <h1>Добро пожаловать, {{ пользователь }}!</h1>
+    
+    <form action="/submit" method="post">
+        <input type="text" name="имя" placeholder="Ваше имя">
+        <input type="number" name="возраст" placeholder="Ваш возраст">
+        <button type="submit">Отправить</button>
+    </form>
+</body>
+</html>
