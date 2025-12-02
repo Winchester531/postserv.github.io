@@ -1,24 +1,59 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Управление Python программой</title>
-</head>
 <body>
-    <button onclick="sendSignal('start')">Старт</button>
-    <button onclick="sendSignal('stop')">Стоп</button>
+    <h2>Отправка числа в Python</h2>
     
+    <!-- Кнопки с числами -->
+    <div>
+        <button onclick="sendNumber(1)">1</button>
+        <button onclick="sendNumber(2)">2</button>
+        <button onclick="sendNumber(3)">3</button>
+        <button onclick="sendNumber(4)">4</button>
+        <button onclick="sendNumber(5)">5</button>
+        <button onclick="sendNumber(6)">6</button>
+        <button onclick="sendNumber(7)">7</button>
+        <button onclick="sendNumber(8)">8</button>
+        <button onclick="sendNumber(9)">9</button>
+        <button onclick="sendNumber(10)">10</button>
+    </div>
+    
+    <p id="status">Не подключено</p>
+
     <script>
-        const ws = new WebSocket('ws://localhost:8765');
+        let ws = null;
         
-        function sendSignal(cmd) {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(cmd);
-                console.log('Отправлено:', cmd);
-            }
+        // Подключаемся к серверу
+        function connect() {
+            ws = new WebSocket('ws://localhost:8765');
+            
+            ws.onopen = function() {
+                document.getElementById('status').innerHTML = 
+                    '<span style="color:green">✓ Подключено</span>';
+            };
+            
+            ws.onmessage = function(event) {
+                console.log("Ответ сервера:", event.data);
+            };
+            
+            ws.onerror = function() {
+                document.getElementById('status').innerHTML = 
+                    '<span style="color:red">✗ Ошибка подключения</span>';
+            };
         }
         
-        ws.onopen = () => console.log('Подключено к серверу');
-        ws.onmessage = (event) => console.log('Получено:', event.data);
+        // Отправляем число на сервер
+        function sendNumber(num) {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                alert("Сначала запустите Python сервер!");
+                return;
+            }
+            
+            console.log("Отправляю число:", num);
+            ws.send(num.toString());
+        }
+        
+        // Автоподключение при загрузке страницы
+        window.onload = connect;
     </script>
 </body>
 </html>
