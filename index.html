@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ заголовок }}</title>
+    <title>Управление Python программой</title>
 </head>
 <body>
-    <h1>Добро пожаловать, {{ пользователь }}!</h1>
+    <button onclick="sendSignal('start')">Старт</button>
+    <button onclick="sendSignal('stop')">Стоп</button>
     
-    <form action="/submit" method="post">
-        <input type="text" name="имя" placeholder="Ваше имя">
-        <input type="number" name="возраст" placeholder="Ваш возраст">
-        <button type="submit">Отправить</button>
-    </form>
+    <script>
+        const ws = new WebSocket('ws://localhost:8765');
+        
+        function sendSignal(cmd) {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(cmd);
+                console.log('Отправлено:', cmd);
+            }
+        }
+        
+        ws.onopen = () => console.log('Подключено к серверу');
+        ws.onmessage = (event) => console.log('Получено:', event.data);
+    </script>
 </body>
 </html>
